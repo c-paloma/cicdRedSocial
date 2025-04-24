@@ -1,0 +1,11 @@
+# Eclipse metadata
+.classpath
+.project
+.settings/
+*.prefs
+
+# archivos de build de Maven
+/target/
+
+# logs y temporales
+*.log
