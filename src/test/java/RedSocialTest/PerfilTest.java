@@ -18,7 +18,7 @@ class PerfilTest {
     
     @Test
     void testAgregarAmigo() {
-        perfil.agregarAmigo("Bob");
+        perfil.agregarAmigo("Boaab");
         List<String> amigos = perfil.listaAmigos();
         assertTrue(amigos.contains("Bob"));
     }
