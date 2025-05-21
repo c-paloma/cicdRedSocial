@@ -31,8 +31,12 @@ public class Perfil {
     
     // Método para eliminar un amigo 
     public void eliminarAmigo(String amigo) {
+    	if (listaAmigos.contains(amigo)) {
     		listaAmigos.remove(amigo);  
-        System.out.println("Amigo eliminado: " + amigo);
+            System.out.println(amigo + " ha sido eliminado de la lista de amigos de " + nombre);
+    	} else {
+            System.out.println(amigo + " no se encontró en la lista de amigos de " + nombre);
+    	}
     }
     
     public List<String> listaAmigos ()
