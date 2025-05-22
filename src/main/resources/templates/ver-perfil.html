@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ver Perfil</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div th:if="${mensajeFeedback}" style="color: green;" th:text="${mensajeFeedback}"></div>
+    <div th:if="${errorFeedback}" style="color: red;" th:text="${errorFeedback}"></div>
+
+    <h1>Perfil</h1>
+    <!-- Check if perfil object exists -->
+    <div th:if="${perfil}">
+        <p><strong>Nombre:</strong> <span th:text="${perfil.nombre}">Nombre del Perfil</span></p>
+        <p><strong>Estado:</strong> <span th:text="${perfil.estado}">Estado Actual</span></p>
+        
+        <h2>Amigos</h2>
+        <ul th:if="${!perfil.listaAmigos().isEmpty()}">
+            <li th:each="amigo : ${perfil.listaAmigos()}" th:text="${amigo}">Amigo</li>
+        </ul>
+        <p th:if="${perfil.listaAmigos().isEmpty()}">No tienes amigos aún.</p>
+
+        <h3>Actualizar Estado</h3>
+        <form th:action="@{/actualizar-estado}" method="post">
+            <div>
+                <label for="estado">Nuevo Estado:</label>
+                <input type="text" id="estado" name="estado" required />
+            </div>
+            <div>
+                <button type="submit">Actualizar Estado</button>
+            </div>
+        </form>
+
+        <hr/>
+        <h3>Agregar Amigo</h3>
+        <form th:action="@{/agregar-amigo}" method="post">
+            <div>
+                <label for="nombreAmigo">Nombre del Amigo:</label>
+                <input type="text" id="nombreAmigo" name="nombreAmigo" required />
+            </div>
+            <div>
+                <button type="submit">Agregar Amigo</button>
+            </div>
+        </form>
+
+        <hr/>
+        <h3>Eliminar Amigo</h3>
+        <form th:action="@{/eliminar-amigo}" method="post">
+            <div>
+                <label for="nombreAmigoEliminar">Nombre del Amigo a Eliminar:</label>
+                <input type="text" id="nombreAmigoEliminar" name="nombreAmigo" required />
+            </div>
+            <div>
+                <button type="submit">Eliminar Amigo</button>
+            </div>
+        </form>
+
+        <hr/>
+        <h3>Enviar Mensaje</h3>
+        <form th:action="@{/enviar-mensaje}" method="post">
+            <div>
+                <label for="nombreAmigoMensaje">Nombre del Amigo:</label>
+                <input type="text" id="nombreAmigoMensaje" name="nombreAmigoMensaje" required />
+                <!-- Ideally, this would be a dropdown of existing friends -->
+            </div>
+            <div>
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" required></textarea>
+            </div>
+            <div>
+                <button type="submit">Enviar Mensaje</button>
+            </div>
+        </form>
+    </div>
+    <div th:if="${perfil == null}">
+        <p>No se ha podido cargar el perfil. <a th:href="@{/crear}">Crear un perfil</a>.</p>
+    </div>
+    
+    <hr/>
+    <a th:href="@{/crear}">Crear otro perfil</a>
+</body>
+</html>
