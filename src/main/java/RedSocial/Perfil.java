@@ -16,26 +16,33 @@ public class Perfil {
         this.estado = "";
         this.listaAmigos = new ArrayList<>();
     }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
     
     // Método para actualizar el estado del perfil
     public void actualizarEstado(String nuevoEstado) {
         this.estado = nuevoEstado;
-        System.out.println(nombre + " actualizó su estado a: " + nuevoEstado);
     }
     
     // Método para agregar un amigo
     public void agregarAmigo(String amigo) {
         listaAmigos.add(amigo);
-        System.out.println(amigo + " ha sido agregado a la lista de amigos de " + nombre);
     }
     
     // Método para eliminar un amigo 
     public void eliminarAmigo(String amigo) {
     	if (listaAmigos.contains(amigo)) {
     		listaAmigos.remove(amigo);  
-            System.out.println(amigo + " ha sido eliminado de la lista de amigos de " + nombre);
     	} else {
-            System.out.println(amigo + " no se encontró en la lista de amigos de " + nombre);
+            // Optionally, you might want to log this or throw an exception
+            // For now, it just does nothing if the friend is not found,
+            // which is consistent with removing the println.
     	}
     }
     
@@ -45,8 +52,10 @@ public class Perfil {
     }
     
     // Método para enviar un mensaje a un amigo
-    public void enviarMensaje(String amigo, String mensaje) {
-        System.out.println(nombre + " envía mensaje a " + amigo + ": " + mensaje);
+    public String enviarMensaje(String amigo, String mensaje) {
+        // In a real application, this would store the message or send it.
+        // For now, just return a confirmation.
+        return "Mensaje enviado a " + amigo + ": '" + mensaje + "'";
     }
     
     // Método para mostrar la información del perfil
