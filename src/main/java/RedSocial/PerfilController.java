@@ -15,6 +15,16 @@ public class PerfilController {
 
     private static Perfil perfilActual = null;
 
+    // Package-private static method for setting perfilActual in tests
+    static void setPerfilActualForTest(Perfil perfil) {
+        perfilActual = perfil;
+    }
+
+    // Package-private static method for getting perfilActual in tests
+    static Perfil getPerfilActualForTest() {
+        return perfilActual;
+    }
+
     @GetMapping("/crear")
     public String mostrarFormularioCreacion() {
         return "crear-perfil"; // Name of the Thymeleaf template
@@ -34,9 +44,9 @@ public class PerfilController {
         }
         model.addAttribute("perfil", perfilActual);
         // This will eventually use Perfil's methods to get data
-        model.addAttribute("nombre", perfilActual.listaAmigos().toString()); // Placeholder, assumes listaAmigos()
-        model.addAttribute("estado", "Estado de prueba"); // Placeholder
-        model.addAttribute("amigos", perfilActual.listaAmigos()); // Placeholder, assumes listaAmigos()
+        model.addAttribute("nombre", perfilActual.getNombre()); 
+        model.addAttribute("estado", perfilActual.getEstado()); 
+        model.addAttribute("amigos", perfilActual.listaAmigos()); 
         return "ver-perfil"; // Name of the Thymeleaf template
     }
 
@@ -46,7 +56,8 @@ public class PerfilController {
             perfilActual.actualizarEstado(estado);
             redirectAttributes.addFlashAttribute("mensajeFeedback", "Estado actualizado correctamente.");
         } else {
-            redirectAttributes.addFlashAttribute("errorFeedback", "No se encontró el perfil para actualizar.");
+            // This case should ideally not be reached if /crear is always the entry point for a null perfilActual
+            redirectAttributes.addFlashAttribute("errorFeedback", "Debes crear un perfil primero.");
             return "redirect:/crear";
         }
         return "redirect:/ver-perfil";
@@ -57,12 +68,12 @@ public class PerfilController {
         if (perfilActual != null) {
             if (nombreAmigo != null && !nombreAmigo.trim().isEmpty()) {
                 perfilActual.agregarAmigo(nombreAmigo.trim());
-                redirectAttributes.addFlashAttribute("mensajeFeedback", nombreAmigo.trim() + " ha sido agregado como amigo.");
+                redirectAttributes.addFlashAttribute("mensajeFeedback", "Amigo '" + nombreAmigo.trim() + "' agregado correctamente.");
             } else {
                 redirectAttributes.addFlashAttribute("errorFeedback", "El nombre del amigo no puede estar vacío.");
             }
         } else {
-            redirectAttributes.addFlashAttribute("errorFeedback", "No se encontró el perfil para agregar amigo.");
+            redirectAttributes.addFlashAttribute("errorFeedback", "Debes crear un perfil primero.");
             return "redirect:/crear";
         }
         return "redirect:/ver-perfil";
@@ -75,12 +86,12 @@ public class PerfilController {
                 // Assuming Perfil.eliminarAmigo handles the case where the friend doesn't exist.
                 // We might want to modify Perfil.eliminarAmigo to return a boolean for better feedback.
                 perfilActual.eliminarAmigo(nombreAmigo.trim());
-                redirectAttributes.addFlashAttribute("mensajeFeedback", nombreAmigo.trim() + " ha sido eliminado de la lista de amigos.");
+                redirectAttributes.addFlashAttribute("mensajeFeedback", "Amigo '" + nombreAmigo.trim() + "' eliminado.");
             } else {
                 redirectAttributes.addFlashAttribute("errorFeedback", "El nombre del amigo a eliminar no puede estar vacío.");
             }
         } else {
-            redirectAttributes.addFlashAttribute("errorFeedback", "No se encontró el perfil para eliminar amigo.");
+            redirectAttributes.addFlashAttribute("errorFeedback", "Debes crear un perfil primero.");
             return "redirect:/crear";
         }
         return "redirect:/ver-perfil";
@@ -90,13 +101,13 @@ public class PerfilController {
     public String enviarMensaje(@RequestParam String nombreAmigoMensaje, @RequestParam String mensaje, RedirectAttributes redirectAttributes) {
         if (perfilActual != null) {
             if (nombreAmigoMensaje != null && !nombreAmigoMensaje.trim().isEmpty() && mensaje != null && !mensaje.trim().isEmpty()) {
-                String feedback = perfilActual.enviarMensaje(nombreAmigoMensaje.trim(), mensaje.trim());
-                redirectAttributes.addFlashAttribute("mensajeFeedback", feedback);
+                String feedbackMensaje = perfilActual.enviarMensaje(nombreAmigoMensaje.trim(), mensaje.trim()); // mensaje already trimmed if it's not empty
+                redirectAttributes.addFlashAttribute("mensajeFeedback", feedbackMensaje);
             } else {
                 redirectAttributes.addFlashAttribute("errorFeedback", "El nombre del amigo y el mensaje no pueden estar vacíos.");
             }
         } else {
-            redirectAttributes.addFlashAttribute("errorFeedback", "No se encontró el perfil para enviar mensaje.");
+            redirectAttributes.addFlashAttribute("errorFeedback", "Debes crear un perfil primero.");
             return "redirect:/crear";
         }
         return "redirect:/ver-perfil";
